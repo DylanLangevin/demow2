@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+    wyatt-nginx:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+          - "8766:80"
+          - "8977:443"
+      restart: unless-stopped
+      volumes:
+        - ./src:/var/www/html
+
+    database:
+        image: mariadb
+        restart: always
+        volumes:
+            - ./database/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+        environment:
+            MYSQL_DATABASE: php_db
+            MYSQL_ROOT_PASSWORD: password
+
+    phpmyadmin:
+        image: adminer
+        restart: always
+        ports:
+            - "1212:8080"
